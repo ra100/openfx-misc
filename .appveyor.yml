@@ -52,9 +52,9 @@ pull_requests:
 # Operating system (build VM template)
 # Example of a multi-platform appveyor.yml can be found at https://github.com/cdcseacave/openMVS/blob/master/.appveyor.yml
 image:
-- Visual Studio 2019
-- Ubuntu
-- macOS
+  - Visual Studio 2019
+  - Ubuntu
+  - macOS
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -74,9 +74,16 @@ init:
   - cmd: msbuild /version
   - sh: gcc -v
 
-
 # clone directory
 clone_folder: c:\dev\openfx-misc
+
+for:
+  - matrix:
+      except:
+        - image: Visual Studio 2019
+    clone_folder: /openfx-misc
+    build:
+      project: /openfx-misc/build/INSTALL.vcxproj
 
 # environment variables
 #environment:
@@ -87,10 +94,10 @@ clone_folder: c:\dev\openfx-misc
 # scripts that run after cloning repository
 install:
   # Dump appveyor build vars for diagnostics
-  - cmd: "ECHO APPVEYOR_FORCED_BUILD: %APPVEYOR_FORCED_BUILD%"
-  - cmd: "ECHO APPVEYOR_RE_BUILD: %APPVEYOR_RE_BUILD%"
+  - cmd: 'ECHO APPVEYOR_FORCED_BUILD: %APPVEYOR_FORCED_BUILD%'
+  - cmd: 'ECHO APPVEYOR_RE_BUILD: %APPVEYOR_RE_BUILD%'
   # Verify that patch command is available
-  - cmd: "where patch"
+  - cmd: 'where patch'
 
   # a3b57fe7f0cfbf84635e3070fc3c896b25ff6c5f is CImg 2.7.2
   # 3efdd8fb35e76873edcb01f9c30af762aeccb97a is CImg 2.7.4
@@ -123,8 +130,8 @@ configuration:
 before_build:
   - mkdir build
   - cd build
-  - cmd: cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX="c:/dev/openfx-misc/install"
-  - sh: cmake .. -DCMAKE_INSTALL_PREFIX="c:/dev/openfx-misc/install" -DCMAKE_BUILD_TYPE=%configuration%
+  - cmd: cmake .. -G %GENERATOR% -DCMAKE_INSTALL_PREFIX=c:\dev\openfx-misc\install
+  - sh: cmake .. -DCMAKE_INSTALL_PREFIX=/openfx-misc/install -DCMAKE_BUILD_TYPE=%configuration%
 
 # scripts to run after build
 #after_build:
@@ -141,7 +148,6 @@ build:
 # to disable automatic builds
 #build: off
 
-
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
@@ -157,7 +163,6 @@ build:
 
 # to disable automatic tests
 test: off
-
 
 #---------------------------------#
 #      artifacts configuration    #
@@ -179,7 +184,6 @@ artifacts:
 
   - path: install
 
-
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
@@ -194,10 +198,10 @@ deploy:
     draft: false
     prerelease: true
     on:
-      branch: master                # release from master branch only
-      configuration: release        # deploy release builds only
-      appveyor_repo_tag: true       # deploy on tag push only
-      is_not_pr: true               # don't deploy pull requests
+      branch: master # release from master branch only
+      configuration: release # deploy release builds only
+      appveyor_repo_tag: true # deploy on tag push only
+      is_not_pr: true # don't deploy pull requests
 
 # scripts to run before deployment
 #before_deploy:
@@ -211,7 +215,6 @@ deploy:
 # to disable deployment
 # deploy: off
 
-
 #---------------------------------#
 #        global handlers          #
 #---------------------------------#
@@ -224,8 +227,6 @@ on_failure:
 
 # after build failure or success
 on_finish:
-
-
 #---------------------------------#
 #         notifications           #
 #---------------------------------#
